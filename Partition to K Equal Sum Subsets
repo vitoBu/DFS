@@ -1,0 +1,31 @@
+class Solution {
+    public boolean canPartitionKSubsets(int[] nums, int k) {
+        int sum = 0;
+        for(int num : nums) sum += num;
+        if(sum % k != 0) return false;  // cannot be dividable 
+        int target = sum / k;
+        Arrays.sort(nums);
+        int start = nums.length - 1;
+        if(nums[start] > target) return false;  // the largest item is greater than the average
+        while(start >= 0 && nums[start] == target){     // nums[start] == target means this item can be a partition itself
+            k--;
+            start--;
+        }
+        return partition(nums, new int[k], target, start);
+    }
+    public boolean partition(int[] nums, int[] subset, int target, int start){
+        if(start < 0) return true;    // each item has been added into a partition
+        int select = nums[start];
+        for(int i = 0; i < subset.length; i++){
+            if(subset[i] + select <= target){       
+                subset[i] += select;
+                if(partition(nums, subset, target, start - 1)){
+                    return true;
+                }
+                subset[i] -= select;
+            }
+        }
+        return false;
+    }
+     
+}
