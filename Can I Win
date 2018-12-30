@@ -1,0 +1,28 @@
+class Solution {
+
+    public boolean canIWin(int maxChoosableInteger, int desiredTotal) {
+        if((1 + maxChoosableInteger) * maxChoosableInteger / 2 < desiredTotal) return false;  // both players cannot win
+        int[] state = new int[maxChoosableInteger + 1];       //the status of each item
+        return canWin(state, desiredTotal, new HashMap<String, Boolean>()); // hashmap to memorize whether the sequence can win
+    }
+    
+    public boolean canWin(int[] state, int desiredTotal, HashMap<String, Boolean> map){
+        String key = Arrays.toString(state);
+        if(map.containsKey(key)){
+            return map.get(key);    //if the state is in hashmap, we dont need to search again, just get the value of map
+        }
+        for(int i = 1; i < state.length; i++){
+            if(state[i] == 0){      //means the current item isnt used
+                state[i] = 1;
+                if(i >= desiredTotal || !canWin(state, desiredTotal - i, map)){   // means choosing this item, I can win or 
+                    map.put(key, true);                                         // the player2 cannot win for the next turn
+                    state[i] = 0;       //backtracking 
+                    return true;
+                }
+                state[i] = 0;
+            }
+        }
+        map.put(key, false);
+        return false;
+    }
+}
