@@ -1,0 +1,41 @@
+class Solution {
+    public List<String> findItinerary(String[][] tickets) {
+        if(tickets == null || tickets.length == 0 || tickets[0].length == 0){     // corner case
+            return new ArrayList<>();
+        }
+        Map<String, List<String>> map = new HashMap<>();          
+        for(int i = 0; i < tickets.length; i++){              // construct a map
+            if(!map.containsKey(tickets[i][0])){
+                map.put(tickets[i][0], new ArrayList<String>());
+            }
+            map.get(tickets[i][0]).add(tickets[i][1]);
+        }
+        for(List<String> list : map.values()){          // smallest lexical orderer 
+            Collections.sort(list);
+        }
+        int totalLen = tickets.length + 1;
+        List<String> list = new ArrayList<>();
+        String start = "JFK";
+        list.add(start);
+        if(dfs(list, totalLen, start, map)){
+            return list;
+        }
+        return null;
+    }
+    public boolean dfs(List<String> list, int totalLen, String start, Map<String, List<String>> map){
+        if(list.size() == totalLen) return true;
+        if(!map.containsKey(start)) return false;     //no path from this point, then backtrack
+        List<String> next = map.get(start);
+        for(int i = 0; i < next.size(); i++){
+            String dest = next.get(i);
+            next.remove(i);
+            list.add(dest);
+            if(dfs(list, totalLen, dest, map)){
+                return true;
+            }
+            list.remove(list.size() - 1);
+            next.add(i, dest);
+        }
+        return false;
+    }
+}
