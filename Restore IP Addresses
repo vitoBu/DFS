@@ -1,0 +1,21 @@
+class Solution {
+    public List<String> restoreIpAddresses(String s) {
+        if (s == null || s.length() == 0 ) return new ArrayList<>();
+        List<String> res = new ArrayList<>();
+        helper(res, s, 0, "", 0);
+        return res;
+    }
+    public void helper(List<String> res, String s, int index, String cur, int count) {
+        if (count > 4) return;    //Valid IP : "XXX.XXX.XXX.XXX"
+        if (count == 4 && index == s.length()) {
+            res.add(cur);
+            return;
+        }
+        for (int i = 1; i < 4; i++) {
+            if (i + index > s.length()) break;
+            String temp = s.substring(index, i + index);
+            if ((temp.startsWith("0") && temp.length() > 1) || (i == 3 && Integer.parseInt(temp) > 255)) continue;
+            helper(res, s, index + i, cur + temp + (count == 3 ? "" : "." ), count + 1 );
+        }
+    }
+}
